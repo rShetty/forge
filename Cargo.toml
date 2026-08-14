@@ -1,0 +1,33 @@
+[package]
+name = "forge"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+description = "Agent supply chain security — code signing, SBOM, vulnerability scanning"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+axum = "0.8"
+tower = "0.5"
+tower-http = { version = "0.6", features = ["trace", "cors"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1", features = ["v4", "v7", "serde"] }
+rusqlite = { version = "0.32", features = ["bundled"] }
+thiserror = "2"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+clap = { version = "4", features = ["derive"] }
+anyhow = "1"
+parking_lot = "0.12"
+toml = "0.8"
+sha2 = "0.10"
+hex = "0.4"
+ed25519-dalek = { version = "2", features = ["rand_core"] }
+rand = "0.8"
+base64 = "0.22"
+
+[dev-dependencies]
+reqwest = { version = "0.12", features = ["json"] }
+tempfile = "3"

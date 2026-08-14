@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2a1e0d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3a2a1a;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="fireGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff4d00;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ff8c00;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffd700;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="anvilGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#8a8a8a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#5a5a5a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background: hexagon (craftsmanship/industrial) -->
+  <polygon points="256,32 440,136 440,376 256,480 72,376 72,136"
+           fill="url(#bgGrad)" stroke="#ff8c00" stroke-width="5"/>
+
+  <!-- Inner hexagon -->
+  <polygon points="256,56 418,148 418,364 256,456 94,364 94,148"
+           fill="none" stroke="#ffaa33" stroke-width="2" stroke-opacity="0.4"/>
+
+  <!-- Forge fire/flame at top (forging/signing) -->
+  <g transform="translate(256, 180)">
+    <path d="M 0 -60 Q -25 -40 -20 -10 Q -15 10 0 15 Q 15 10 20 -10 Q 25 -40 0 -60 Z"
+          fill="url(#fireGrad)"/>
+    <path d="M 0 -45 Q -12 -30 -10 -10 Q -5 5 0 8 Q 5 5 10 -10 Q 12 -30 0 -45 Z"
+          fill="#ffec80" opacity="0.7"/>
+  </g>
+
+  <!-- Anvil silhouette (supply chain/forging) -->
+  <g transform="translate(256, 310)">
+    <!-- Anvil top -->
+    <rect x="-60" y="-15" width="120" height="20" rx="3" fill="url(#anvilGrad)" stroke="#aaa" stroke-width="1"/>
+    <!-- Anvil horn -->
+    <polygon points="60,-15 75,-10 75,5 60,5" fill="url(#anvilGrad)"/>
+    <!-- Anvil waist -->
+    <rect x="-35" y="5" width="70" height="12" fill="url(#anvilGrad)"/>
+    <!-- Anvil base -->
+    <rect x="-50" y="17" width="100" height="18" rx="3" fill="url(#anvilGrad)" stroke="#888" stroke-width="1"/>
+  </g>
+
+  <!-- Shield checkmark (security/verification) -->
+  <g transform="translate(256, 370)">
+    <path d="M 0 -15 L 18 -8 L 18 5 Q 18 15 0 22 Q -18 15 -18 5 L -18 -8 Z"
+          fill="none" stroke="#ffec80" stroke-width="3"/>
+    <path d="M -7 2 L -2 8 L 8 -4"
+          fill="none" stroke="#ffec80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Sparks (code signing) -->
+  <g fill="#ffd700" opacity="0.9">
+    <circle cx="195" cy="170" r="3"/>
+    <circle cx="317" cy="170" r="3"/>
+    <circle cx="210" cy="145" r="2"/>
+    <circle cx="302" cy="145" r="2"/>
+    <line x1="195" y1="170" x2="185" y2="155" stroke="#ffd700" stroke-width="2" opacity="0.5"/>
+    <line x1="317" y1="170" x2="327" y2="155" stroke="#ffd700" stroke-width="2" opacity="0.5"/>
+  </g>
+
+  <!-- Text -->
+  <text x="256" y="490" text-anchor="middle" font-family="Helvetica, Arial, sans-serif"
+        font-size="28" font-weight="bold" fill="#ffaa33" letter-spacing="6">FORGE</text>
+</svg>

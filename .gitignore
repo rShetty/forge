@@ -1,0 +1,9 @@
+/target
+*.db
+*.db-wal
+*.db-shm
+config.toml
+.idea/
+.vscode/
+*.swp
+.DS_Store
