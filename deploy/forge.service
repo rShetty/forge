@@ -1,0 +1,22 @@
+[Unit]
+Description=Forge Supply Chain Security
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=forge
+Group=forge
+EnvironmentFile=/etc/forge/forge.env
+ExecStart=/usr/local/bin/forge serve --config /etc/forge/forge.toml
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/forge
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,11 @@
+[server]
+host = "0.0.0.0"
+port = 8788
+
+[database]
+path = "/var/lib/forge/forge.db"
+
+[trust]
+min_trust_score = 0.5
+rescan_threshold_days = 30
+block_on_critical_vuln = true
