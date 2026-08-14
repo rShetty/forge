@@ -16,10 +16,18 @@ impl TrustEngine {
     ) -> f64 {
         let mut score = 0.0;
 
-        if signed { score += 0.25; }
-        if publisher_trusted { score += 0.20; }
-        if sbom_present { score += 0.15; }
-        if provenance_verified { score += 0.20; }
+        if signed {
+            score += 0.25;
+        }
+        if publisher_trusted {
+            score += 0.20;
+        }
+        if sbom_present {
+            score += 0.15;
+        }
+        if provenance_verified {
+            score += 0.20;
+        }
 
         if vulnerabilities_count == 0 {
             score += 0.20;

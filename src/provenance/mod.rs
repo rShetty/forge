@@ -1,7 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-use crate::errors::Result;
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Provenance {
     pub builder: String,
@@ -63,7 +61,7 @@ mod tests {
         );
         assert_eq!(p.builder, "github-actions");
         assert_eq!(p.commit_hash, "abc123");
-        assert!(p.build_time.len() > 0);
+        assert!(!p.build_time.is_empty());
     }
 
     #[test]

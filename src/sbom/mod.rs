@@ -39,7 +39,10 @@ impl SbomEngine {
         for line in content.lines() {
             let trimmed = line.trim();
             if trimmed.starts_with("name = \"") {
-                let name = trimmed.trim_start_matches("name = \"").trim_end_matches('"').to_string();
+                let name = trimmed
+                    .trim_start_matches("name = \"")
+                    .trim_end_matches('"')
+                    .to_string();
                 packages.push(SbomPackage {
                     name,
                     version: String::new(),
@@ -48,7 +51,10 @@ impl SbomEngine {
                 });
             }
             if trimmed.starts_with("version = \"") && !packages.is_empty() {
-                let version = trimmed.trim_start_matches("version = \"").trim_end_matches('"').to_string();
+                let version = trimmed
+                    .trim_start_matches("version = \"")
+                    .trim_end_matches('"')
+                    .to_string();
                 packages.last_mut().unwrap().version = version;
             }
         }
@@ -62,11 +68,17 @@ impl SbomEngine {
             if trimmed.is_empty() || trimmed.starts_with('#') || trimmed.starts_with('-') {
                 continue;
             }
-            let parts: Vec<&str> = trimmed.splitn(2, |c: char| c == '=' || c == '<' || c == '>' || c == '!' || c == '~' || c == ';')
+            let parts: Vec<&str> = trimmed
+                .splitn(2, |c: char| {
+                    c == '=' || c == '<' || c == '>' || c == '!' || c == '~' || c == ';'
+                })
                 .map(|s| s.trim())
                 .collect();
             let name = parts[0].to_string();
-            let version = parts.get(1).map(|v| v.trim_start_matches('=').trim().to_string()).unwrap_or_default();
+            let version = parts
+                .get(1)
+                .map(|v| v.trim_start_matches('=').trim().to_string())
+                .unwrap_or_default();
             packages.push(SbomPackage {
                 name,
                 version,
@@ -79,16 +91,16 @@ impl SbomEngine {
 
     pub fn parse_package_json(content: &str) -> Vec<SbomPackage> {
         let mut packages = Vec::new();
-        if let Ok(json) = serde_json::from_str::<serde_json::Value>(content) {
-            if let Some(deps) = json.get("dependencies").and_then(|d| d.as_object()) {
-                for (name, version) in deps {
-                    packages.push(SbomPackage {
-                        name: name.clone(),
-                        version: version.as_str().unwrap_or("").to_string(),
-                        license: None,
-                        source: "npm".to_string(),
-                    });
-                }
+        if let Ok(json) = serde_json::from_str::<serde_json::Value>(content)
+            && let Some(deps) = json.get("dependencies").and_then(|d| d.as_object())
+        {
+            for (name, version) in deps {
+                packages.push(SbomPackage {
+                    name: name.clone(),
+                    version: version.as_str().unwrap_or("").to_string(),
+                    license: None,
+                    source: "npm".to_string(),
+                });
             }
         }
         packages
@@ -102,8 +114,18 @@ mod tests {
     #[test]
     fn test_generate_sbom() {
         let deps = vec![
-            SbomPackage { name: "tokio".to_string(), version: "1.0".to_string(), license: Some("MIT".to_string()), source: "cargo".to_string() },
-            SbomPackage { name: "serde".to_string(), version: "1.0".to_string(), license: Some("MIT".to_string()), source: "cargo".to_string() },
+            SbomPackage {
+                name: "tokio".to_string(),
+                version: "1.0".to_string(),
+                license: Some("MIT".to_string()),
+                source: "cargo".to_string(),
+            },
+            SbomPackage {
+                name: "serde".to_string(),
+                version: "1.0".to_string(),
+                license: Some("MIT".to_string()),
+                source: "cargo".to_string(),
+            },
         ];
         let sbom = SbomEngine::generate("my-agent", "1.0.0", &deps).unwrap();
         assert_eq!(sbom.name, "my-agent");

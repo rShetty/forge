@@ -32,7 +32,9 @@ impl Default for Config {
                 host: "0.0.0.0".to_string(),
                 port: 8788,
             },
-            database: DatabaseConfig { path: "forge.db".to_string() },
+            database: DatabaseConfig {
+                path: "forge.db".to_string(),
+            },
             trust: TrustConfig {
                 min_trust_score: 0.5,
                 rescan_threshold_days: 30,

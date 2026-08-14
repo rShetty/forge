@@ -41,7 +41,9 @@ impl SigningEngine {
             .decode(private_key_b64)
             .map_err(|e| ForgeError::SignatureInvalid(format!("key decode: {}", e)))?;
         let signing_key = SigningKey::from_bytes(
-            key_bytes.as_slice().try_into()
+            key_bytes
+                .as_slice()
+                .try_into()
                 .map_err(|_| ForgeError::SignatureInvalid("invalid key length".to_string()))?,
         );
         let signature: Signature = signing_key.sign(message);
@@ -57,12 +59,16 @@ impl SigningEngine {
             .map_err(|e| ForgeError::SignatureInvalid(format!("sig decode: {}", e)))?;
 
         let verifying_key = VerifyingKey::from_bytes(
-            key_bytes.as_slice().try_into()
+            key_bytes
+                .as_slice()
+                .try_into()
                 .map_err(|_| ForgeError::SignatureInvalid("invalid key length".to_string()))?,
         )
         .map_err(|e: ed25519_dalek::SignatureError| ForgeError::SignatureInvalid(e.to_string()))?;
         let signature = Signature::from_bytes(
-            sig_bytes.as_slice().try_into()
+            sig_bytes
+                .as_slice()
+                .try_into()
                 .map_err(|_| ForgeError::SignatureInvalid("invalid sig length".to_string()))?,
         );
 

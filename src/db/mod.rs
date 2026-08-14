@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use chrono::Utc;
-use rusqlite::{params, Connection};
+use rusqlite::{Connection, params};
 use uuid::Uuid;
 
 use crate::errors::Result;
@@ -12,12 +12,13 @@ pub struct Database {
 
 impl Database {
     pub fn new(path: &str) -> Result<Self> {
-        let conn = Connection::open(path).map_err(|e| {
-            crate::errors::ForgeError::Database(format!("failed to open: {}", e))
-        })?;
+        let conn = Connection::open(path)
+            .map_err(|e| crate::errors::ForgeError::Database(format!("failed to open: {}", e)))?;
         conn.execute_batch("PRAGMA journal_mode=WAL;")?;
         Self::migrate(&conn)?;
-        Ok(Database { conn: Arc::new(parking_lot::Mutex::new(conn)) })
+        Ok(Database {
+            conn: Arc::new(parking_lot::Mutex::new(conn)),
+        })
     }
 
     fn migrate(conn: &Connection) -> Result<()> {
@@ -69,12 +70,17 @@ impl Database {
                 trust_level REAL NOT NULL DEFAULT 1.0,
                 added_at TEXT NOT NULL
             );
-        ")?;
+        ",
+        )?;
         Ok(())
     }
 
     pub fn register_package(
-        &self, name: &str, version: &str, publisher: &str, file_hash: &str,
+        &self,
+        name: &str,
+        version: &str,
+        publisher: &str,
+        file_hash: &str,
     ) -> Result<Uuid> {
         let conn = self.conn.lock();
         let id = Uuid::now_v7();
@@ -159,7 +165,9 @@ impl Database {
             }))
         })?;
         let mut result = Vec::new();
-        for row in rows { result.push(row?); }
+        for row in rows {
+            result.push(row?);
+        }
         Ok(result)
     }
 
@@ -204,7 +212,12 @@ impl Database {
     }
 
     pub fn add_vulnerability(
-        &self, package_id: Uuid, cve_id: &str, severity: &str, description: &str, affected_version: &str,
+        &self,
+        package_id: Uuid,
+        cve_id: &str,
+        severity: &str,
+        description: &str,
+        affected_version: &str,
     ) -> Result<()> {
         let conn = self.conn.lock();
         let id = Uuid::now_v7().to_string();
@@ -235,11 +248,18 @@ impl Database {
             }))
         })?;
         let mut result = Vec::new();
-        for row in rows { result.push(row?); }
+        for row in rows {
+            result.push(row?);
+        }
         Ok(result)
     }
 
-    pub fn add_trusted_publisher(&self, publisher: &str, public_key: &str, trust_level: f64) -> Result<()> {
+    pub fn add_trusted_publisher(
+        &self,
+        publisher: &str,
+        public_key: &str,
+        trust_level: f64,
+    ) -> Result<()> {
         let conn = self.conn.lock();
         let now = Utc::now().to_rfc3339();
         conn.execute(
@@ -266,7 +286,9 @@ impl Database {
 
     pub fn list_trusted_publishers(&self) -> Result<Vec<serde_json::Value>> {
         let conn = self.conn.lock();
-        let mut stmt = conn.prepare("SELECT publisher, public_key, trust_level, added_at FROM trusted_publishers")?;
+        let mut stmt = conn.prepare(
+            "SELECT publisher, public_key, trust_level, added_at FROM trusted_publishers",
+        )?;
         let rows = stmt.query_map([], |row| {
             Ok(serde_json::json!({
                 "publisher": row.get::<_, String>(0)?,
@@ -276,11 +298,18 @@ impl Database {
             }))
         })?;
         let mut result = Vec::new();
-        for row in rows { result.push(row?); }
+        for row in rows {
+            result.push(row?);
+        }
         Ok(result)
     }
 
-    pub fn store_signing_key(&self, publisher: &str, public_key: &str, private_key_encrypted: &str) -> Result<()> {
+    pub fn store_signing_key(
+        &self,
+        publisher: &str,
+        public_key: &str,
+        private_key_encrypted: &str,
+    ) -> Result<()> {
         let conn = self.conn.lock();
         let id = Uuid::now_v7().to_string();
         let now = Utc::now().to_rfc3339();

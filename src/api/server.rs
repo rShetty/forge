@@ -1,5 +1,3 @@
-use tower_http::{cors::CorsLayer, trace::TraceLayer};
-
 use crate::api::state::AppState;
 use crate::config::Config;
 

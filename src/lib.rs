@@ -1,9 +1,9 @@
+pub mod api;
 pub mod config;
 pub mod db;
 pub mod errors;
-pub mod signing;
+pub mod provenance;
 pub mod sbom;
 pub mod scan;
-pub mod provenance;
+pub mod signing;
 pub mod trust;
-pub mod api;
