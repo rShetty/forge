@@ -34,6 +34,10 @@ pub fn all_routes() -> Vec<(String, MethodRouter)> {
             post(set_provenance),
         ),
         ("/api/packages/{id}/trust".to_string(), get(get_trust_score)),
+        (
+            "/api/packages/{id}/agents".to_string(),
+            post(associate_package_agent).get(list_package_agents),
+        ),
         // Full verify (does everything: sign + sbom + scan + provenance + trust)
         ("/api/verify".to_string(), post(verify_full)),
         // Trusted publishers
@@ -302,6 +306,47 @@ async fn get_trust_score(
         },
         "meets_threshold": crate::trust::TrustEngine::meets_threshold(score, state.config.trust.min_trust_score),
     })))
+}
+
+#[derive(Deserialize)]
+struct AssociateAgentRequest {
+    agent_id: String,
+    #[serde(default)]
+    operator: String,
+}
+
+async fn associate_package_agent(
+    State(state): State<AppState>,
+    Path(id): Path<Uuid>,
+    Json(req): Json<AssociateAgentRequest>,
+) -> Result<Json<serde_json::Value>, ForgeError> {
+    if req.agent_id.trim().is_empty() {
+        return Err(ForgeError::VerificationFailed(
+            "agent_id is required".into(),
+        ));
+    }
+    state
+        .db
+        .get_package(id)?
+        .ok_or_else(|| ForgeError::NotFound("package not found".to_string()))?;
+    state.db.associate_agent(id, &req.agent_id, &req.operator)?;
+    Ok(Json(serde_json::json!({
+        "package_id": id,
+        "agent_id": req.agent_id,
+        "associated": true,
+        "operator": req.operator,
+    })))
+}
+
+async fn list_package_agents(
+    State(state): State<AppState>,
+    Path(id): Path<Uuid>,
+) -> Result<Json<Vec<serde_json::Value>>, ForgeError> {
+    state
+        .db
+        .get_package(id)?
+        .ok_or_else(|| ForgeError::NotFound("package not found".to_string()))?;
+    Ok(Json(state.db.list_package_agents(id)?))
 }
 
 // ── Full verify (one-shot) ────────────────────────────────────────

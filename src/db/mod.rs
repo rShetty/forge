@@ -70,6 +70,18 @@ impl Database {
                 trust_level REAL NOT NULL DEFAULT 1.0,
                 added_at TEXT NOT NULL
             );
+
+            CREATE TABLE IF NOT EXISTS package_agent_associations (
+                id TEXT PRIMARY KEY,
+                package_id TEXT NOT NULL,
+                agent_id TEXT NOT NULL,
+                associated_by TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                UNIQUE(package_id, agent_id),
+                FOREIGN KEY (package_id) REFERENCES packages(id)
+            );
+            CREATE INDEX IF NOT EXISTS idx_assoc_package ON package_agent_associations(package_id);
+            CREATE INDEX IF NOT EXISTS idx_assoc_agent ON package_agent_associations(agent_id);
         ",
         )?;
         Ok(())
@@ -199,6 +211,49 @@ impl Database {
             params![provenance.to_string(), now, id.to_string()],
         )?;
         Ok(())
+    }
+
+    pub fn associate_agent(
+        &self,
+        package_id: Uuid,
+        agent_id: &str,
+        associated_by: &str,
+    ) -> Result<()> {
+        let conn = self.conn.lock();
+        conn.execute(
+            "INSERT OR IGNORE INTO package_agent_associations
+             (id, package_id, agent_id, associated_by, created_at)
+             VALUES (?, ?, ?, ?, ?)",
+            params![
+                Uuid::now_v7().to_string(),
+                package_id.to_string(),
+                agent_id,
+                associated_by,
+                Utc::now().to_rfc3339()
+            ],
+        )?;
+        Ok(())
+    }
+
+    pub fn list_package_agents(&self, package_id: Uuid) -> Result<Vec<serde_json::Value>> {
+        let conn = self.conn.lock();
+        let mut stmt = conn.prepare(
+            "SELECT agent_id, associated_by, created_at
+             FROM package_agent_associations WHERE package_id = ?
+             ORDER BY created_at DESC",
+        )?;
+        let rows = stmt.query_map(params![package_id.to_string()], |row| {
+            Ok(serde_json::json!({
+                "agent_id": row.get::<_, String>(0)?,
+                "associated_by": row.get::<_, String>(1)?,
+                "created_at": row.get::<_, String>(2)?,
+            }))
+        })?;
+        let mut result = Vec::new();
+        for row in rows {
+            result.push(row?);
+        }
+        Ok(result)
     }
 
     pub fn update_trust_score(&self, id: Uuid, score: f64) -> Result<()> {
