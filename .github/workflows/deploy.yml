@@ -70,6 +70,12 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v4
+      - name: Connect to tailnet
+        uses: tailscale/github-action@306e68a486fd2350f2bfc3b19fcd143891a4a2d8 # v4
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:hostinger
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1
         with:
