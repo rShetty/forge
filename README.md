@@ -13,7 +13,7 @@ OWASP Agentic AI Top 10 #5: Supply Chain Risks.
 ## Role in the Ecosystem
 
 ```
-Governance:   Patroclus · Oracle · Bastion · Forge · Pact
+Governance:   Governance Hub · Patroclus · Argus · Forge
 Runtime:      Hive · Relay · Miser
 Enforcement:  Aegis · Sentiel · Cortex
 ```
@@ -88,7 +88,7 @@ Patroclus policies can reference Forge trust scores:
 
 ## Ecosystem
 
-Forge is part of a six-project AI governance ecosystem for enterprises:
+Forge is part of the AI governance ecosystem governed through Governance Hub:
 
 | Project | Role | Repo |
 |---|---|---|
@@ -99,6 +99,8 @@ Forge is part of a six-project AI governance ecosystem for enterprises:
 | **Sentiel** | Observability, DLP & compliance | [rShetty/sentiel](https://github.com/rShetty/sentiel) |
 | **Aegis** | Network egress & attestation | [rShetty/Aegis](https://github.com/rShetty/Aegis) |
 | **Forge** | Agent supply chain security | [rShetty/forge](https://github.com/rShetty/forge) |
+| **Argus** | Human/agent OIDC identity provider | [rShetty/argus](https://github.com/rShetty/argus) |
+| **Governance Hub** | Unified admin console and sole product UI | [rShetty/governance-hub](https://github.com/rShetty/governance-hub) |
 
 Forge gates agent registration in Hive: before an agent can be deployed, Forge
 verifies its signature, generates an SBOM, scans for vulnerabilities, and
