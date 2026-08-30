@@ -70,12 +70,14 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v4
-      - name: Connect to tailnet
-        uses: tailscale/github-action@306e68a486fd2350f2bfc3b19fcd143891a4a2d8 # v4
-        with:
-          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-          tags: tag:hostinger
+      # NOTE: no "Connect to tailnet" step here — the VPS is reachable over
+      # public SSH (proven by the retry jobs, which never join the tailnet
+      # and still deploy fine), while this repo's TS_OAUTH_* secrets hold a
+      # stale OAuth client that is not granted `tag:hostinger`, making the
+      # tailscale step fail with "requested tags ... are invalid or not
+      # permitted". Restore the step only after TS_OAUTH_CLIENT_ID /
+      # TS_OAUTH_SECRET are updated to the client used by the other repos
+      # (set 2026-08-23T08:48Z).
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1
         with:
